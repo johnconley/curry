@@ -33,7 +33,7 @@ class CurrySpider(scrapy.Spider):
 
     def parse(self, response):
         filename = 'players'
-        player_urls = response.xpath('//tr/td[1]/a/@href').extract()
+        player_urls = response.xpath('//tr/td[1]//a/@href').extract()
         with open(filename, 'a') as f:
            	for p in player_urls:
            		f.write(p+"\n")
