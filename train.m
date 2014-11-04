@@ -16,12 +16,5 @@ E = lambda * eye(size(B, 2));
 E(1,1) = 0;
 
 theta = (B' * B + E) \ (B' * Y);
-% disp('in train: size theta');
-% disp(size(theta));
-% disp('size X');
-% disp(size(X));
-% disp('size Y');
-% disp(size(Y));
-% disp('end train-------------');
 
 end

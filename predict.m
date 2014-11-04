@@ -10,8 +10,6 @@ function pred_Y = predict(theta, X, mode)
 %  pred_Y: [m x 1] vector, containing the predicted output values.
 %
 
-% disp('size(features(X,mode))');
-% disp(size(features(X,mode)));
 pred_Y =  features(X, mode) * theta;
 
 end

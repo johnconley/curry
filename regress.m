@@ -1,12 +1,13 @@
 stats = csvread('fixedstats.csv');
 players = unique(stats(:,1));
-p = size(players,1);
+% p = size(players,1);
+% p=6;
+% p=1000;
+p = 100;
 
 Xtrain = [];
 Ytrain = [];
-% for i=1:p
-% for i=1:6
-for i=1:1000
+for i=1:p
     rows = stats(:,1) == players(i);
     Xplayer = stats(rows,:);
     Xplayer = Xplayer(:, [2, 4:end]);
@@ -57,22 +58,30 @@ for i=1:1000
 end
 
 m = size(Xtrain, 1);
-num = 30;
-Xtest = Xtrain(m-num:end,:);
-Ytest = Ytrain(m-num:end);
-Xtrain = Xtrain(1:m-(num+1),:);
-Ytrain = Ytrain(1:m-(num+1),:);
+% test_size = ceiling(p/10);
+test_size = 30;
+Xtest = Xtrain(m-test_size:end,:);
+Ytest = Ytrain(m-test_size:end);
+Xtrain = Xtrain(1:m-(test_size+1),:);
+Ytrain = Ytrain(1:m-(test_size+1),:);
 
-lambda = 5;
-mode = 'quadratic';
-disp('size Xtrain');
-disp(size(Xtrain));
-disp('size Ytrain');
-disp(size(Ytrain));
-disp('size theta');
-disp(size(theta));
-theta = train(Xtrain, Ytrain, lambda, mode);
-disp('theta');
-disp(theta);
-Y = predict(theta, Xtest, mode);
+% lambda = 5;
+mode = 'linear';
+% theta = train(Xtrain, Ytrain, lambda, mode);
+% Y = predict(theta, Xtest, mode);
 % err = mean((Ytest - Y).^2);
+
+lambdas = [10^(-7);10^(-5);10^(-3);10^(-1);10^1;10^3;10^5;10^7];
+error = zeros(size(lambdas));
+for i=1:size(lambdas)
+    theta = train(Xtrain, Ytrain, lambdas(i), mode);
+    Y = predict(theta, Xtest, mode);
+    error(i) = mean((Ytest - Y).^2);
+end
+
+plot(log10(lambdas), error, '-db');
+ylabel('mean squared error');
+title('mean squared error for linear regression');
+xlabel('log_{10}\lambda');
+
+saveas(gcf, 'lin.fig');
