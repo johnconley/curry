@@ -7,7 +7,7 @@ Xtrain = [];
 Ytrain = [];
 % for i=1:p
 % for i=1:6
-for i=1:100
+for i=1:40
     rows = stats(:,1) == players(i);
     Xplayer = stats(rows,:);
     Xplayer = Xplayer(:, [2, 4:end]);

@@ -5,6 +5,7 @@ function marsplot()
 [Xtrain, Ytrain, Xtest, Ytest] = gen_data();
 
 max_terms = [10, 50, 100, 200];
+max_terms = [10,20];
 error = zeros(size(max_terms));
 figure;
 for i=1:size(max_terms,2)

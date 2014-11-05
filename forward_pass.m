@@ -1,6 +1,7 @@
 function [knots, B] = forward_pass(X, Y, max_terms)
-% X - mxn matrix
-% Y - mx1 vector
+% X: [m x n] matrix of training input data
+% Y: [m x 1] vector of training output data
+% max_terms: maximum numbers of terms in the model
 
 m = size(X,1);
 n = size(X,2);
@@ -13,7 +14,9 @@ for i=1:n
     end
 end
 
-knots = zeros(2, max_terms);
+% knots(1,:) = [t,j,s], where t is the value of the knot, j is the feature,
+% and s in {1,-1}. one row generates max(s*(t-xj),0)
+knots = zeros(2*max_terms,3);
 H = zeros(m, (max_terms * 2) + 1);
 H(:,1) = 1;
 term_ix = 1;
@@ -42,7 +45,7 @@ for knotNum = 1:max_terms
                 temp_H(:, find(sum(abs(temp_H)) == 0)) = [];
                 if size(temp_H,2) == zerocol
                     B = ((temp_H' * temp_H) \ temp_H') * Y;
-                    curr_err = mars_error(B, temp_H, Y);
+                    curr_err = mean((Y - temp_H*B).^2); % mse
                     if curr_err < min_err
                         winning_H = temp_H;
                         winning_knot_row = xj_row;
@@ -55,8 +58,12 @@ for knotNum = 1:max_terms
     end
 
     H = winning_H;
-    knots(1,term_ix) = xj(winning_knot_row, winning_knot_col);
-    knots(1,term_ix+1) = winning_knot_col;
+    knots(term_ix,1) = xj(winning_knot_row, winning_knot_col);
+    knots(term_ix,2) = winning_knot_col;
+    knots(term_ix,3) = 1;
+    knots(term_ix+1,1) = xj(winning_knot_row, winning_knot_col);
+    knots(term_ix+1,2) = winning_knot_col;
+    knots(term_ix+1,3) = -1;
     term_ix = term_ix + 2;
 
     xj(winning_knot_row, winning_knot_col) = 0;
