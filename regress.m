@@ -64,4 +64,3 @@ Ytest = Ytrain(m-num:end);
 Xtrain = Xtrain(1:m-(num+1),:);
 Ytrain = Ytrain(1:m-(num+1),:);
 end
-

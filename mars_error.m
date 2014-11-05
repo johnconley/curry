@@ -11,4 +11,3 @@ for row=1:size(pred_y, 1)
 end
     err = y / row;
 end
-

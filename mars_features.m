@@ -1,27 +1,20 @@
-function H = mars_features(knots, X)
-%UNTITLED3 Summary of this function goes here
+function H = mars_features(X, knots)
+% X - mxn matrix
 %   Detailed explanation goes here
-knotNum = (size(knots,2) / 2);
-H = ones(size(X,1), 1 + (knotNum * 2));
+
+m = size(X,1);
+num_knots = size(knots,2)/2;
+H = ones(m, 1 + 2*num_knots);
 count = 2;
-for knotcount=1:size(knots,2)
-    if (mod(knotcount,2) == 1)
-        n = knots(1, knotcount + 1);
+for k = 1:2*num_knots
+    if mod(k,2) == 1
+        j = knots(1, k + 1);
         for Xrow=1:size(X, 1)
-            if (knots(1, knotcount) - X(Xrow, n)) > 0 
-                H(Xrow, count) = (knots(1, knotcount) - X(Xrow, n));
-            else
-                H(Xrow, count) = 0;
-            end
-            if (X(Xrow, n) - knots(1, knotcount)) > 0 
-                H(Xrow, count + 1) = (X(Xrow, n) - knots(1, knotcount));
-            else
-                H(Xrow, count + 1) = 0;
-            end
+            H(Xrow, count) = max(knots(1, k) - X(Xrow, j), 0);
+            H(Xrow, count + 1) = max(X(Xrow, j) - knots(1, k), 0);
         end
         count = count + 2;
     end
 end
 
 end
-
