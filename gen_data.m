@@ -1,4 +1,4 @@
-function [Xtrain, Ytrain, Xtest, Ytest] = regress()
+function [Xtrain, Ytrain, Xtest, Ytest] = gen_data()
 stats = csvread('fixedstats.csv');
 players = unique(stats(:,1));
 p = size(players,1);
@@ -36,9 +36,6 @@ for i=1:100
     Yplayer = Xplayer(2:end,end);
     num_years = size(Xplayer,1);
     if num_years > 1
-%         disp(Xplayer);
-%         disp(Yplayer);
-%         disp(players(i));
         for j=2:num_years-1;
             % sum statistics and recalculate percentages
             Xplayer(j,2:end) = Xplayer(j-1,2:end) + Xplayer(j,2:end);
@@ -63,4 +60,5 @@ Xtest = Xtrain(m-num:end,:);
 Ytest = Ytrain(m-num:end);
 Xtrain = Xtrain(1:m-(num+1),:);
 Ytrain = Ytrain(1:m-(num+1),:);
+
 end

@@ -1,4 +1,4 @@
-function [knots, B] = mars(X, Y, max_terms)
+function [knots, B] = forward_pass(X, Y, max_terms)
 % X - mxn matrix
 % Y - mx1 vector
 
