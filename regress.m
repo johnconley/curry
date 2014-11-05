@@ -1,3 +1,4 @@
+function [Xtrain, Ytrain, Xtest, Ytest] = regress()
 stats = csvread('fixedstats.csv');
 players = unique(stats(:,1));
 p = size(players,1);
@@ -6,7 +7,7 @@ Xtrain = [];
 Ytrain = [];
 % for i=1:p
 % for i=1:6
-for i=1:1000
+for i=1:100
     rows = stats(:,1) == players(i);
     Xplayer = stats(rows,:);
     Xplayer = Xplayer(:, [2, 4:end]);
@@ -57,22 +58,10 @@ for i=1:1000
 end
 
 m = size(Xtrain, 1);
-num = 30;
+num = 10;
 Xtest = Xtrain(m-num:end,:);
 Ytest = Ytrain(m-num:end);
 Xtrain = Xtrain(1:m-(num+1),:);
 Ytrain = Ytrain(1:m-(num+1),:);
+end
 
-lambda = 5;
-mode = 'quadratic';
-disp('size Xtrain');
-disp(size(Xtrain));
-disp('size Ytrain');
-disp(size(Ytrain));
-disp('size theta');
-disp(size(theta));
-theta = train(Xtrain, Ytrain, lambda, mode);
-disp('theta');
-disp(theta);
-Y = predict(theta, Xtest, mode);
-% err = mean((Ytest - Y).^2);
