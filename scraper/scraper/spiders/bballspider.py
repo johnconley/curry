@@ -17,10 +17,12 @@ class CurrySpider(scrapy.Spider):
     # start_urls = start_urls[:10]
 
     def parse(self, response):
-        filename = "stats"
         player_id = response.url.split("/")[-1].split(".")[0]
         name = response.xpath('//div[@id="info_box"]//h1/text()').extract()[0]
-        table = '//table[@id="per_minute"]/tbody'
+        data_types = ["totals", "per_game", "per_minute", "per_poss"]
+        data_type = data_types[3]
+        filename = data_type + "_stats"
+        table = '//table[@id="' + data_type + '"]/tbody'
         rows = response.xpath(table).css('tr')
         fields = ['id',
                   'name',
@@ -62,10 +64,17 @@ class CurrySpider(scrapy.Spider):
             l.add_value('name', name)
 
             for j, f in enumerate(scraping_fields):
+                # this is necessary to skip over effective field goal percentage
+                # column in the totals table
+                if data_type == "totals" and j >= 17:
+                    ix = j + 1
+                else:
+                    ix = j
+
                 # get text in ith row, jth column of the table
-                val = row.css('td')[j].xpath('text()').extract()
+                val = row.css('td')[ix].xpath('text()').extract()
                 if len(val) < 1:
-                    val = row.css('td')[j].xpath('a/text()').extract()
+                    val = row.css('td')[ix].xpath('a/text()').extract()
 
                 # add value to the ItemLoader
                 if len(val) < 1:
