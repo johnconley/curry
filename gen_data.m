@@ -6,8 +6,7 @@ p = size(players,1);
 Xtrain = [];
 Ytrain = [];
 % for i=1:p
-% for i=1:6
-for i=1:40
+for i=1:100
     rows = stats(:,1) == players(i);
     Xplayer = stats(rows,:);
     Xplayer = Xplayer(:, [2, 4:end]);
@@ -33,6 +32,8 @@ for i=1:40
         end
     end
     
+    % column corresponds to which attribute we're predicting
+    % end is points scored
     Yplayer = Xplayer(2:end,end);
     num_years = size(Xplayer,1);
     if num_years > 1

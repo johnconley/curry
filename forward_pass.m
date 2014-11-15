@@ -21,6 +21,7 @@ H = zeros(m, (max_terms * 2) + 1);
 H(:,1) = 1;
 term_ix = 1;
 
+% TODO: generate max_terms terms, not 2*max_terms
 for knotNum = 1:max_terms
     min_err = Inf;
     for xj_row = 1:m

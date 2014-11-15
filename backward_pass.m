@@ -4,9 +4,6 @@ function [knots, B] = backward_pass(X, Y, overfit_knots, overfit_B)
 % knots: 
 % B: 
 
-% best submodel has lowest GCV
-% when do we stop?
-
 penalty = 2;
 m = size(X,1);
 knots = overfit_knots;
@@ -15,11 +12,12 @@ H = mars_features(X, knots);
 
 pred_Y = H*B;
 rss = sum((Y - pred_Y).^2);
-gcv = calc_gcv(m, size(H,2), penalty, rss);
-disp('initial gcv');
-disp(gcv);
+old_gcv = calc_gcv(m, size(H,2), penalty, rss);
+% disp('initial gcv');
+% disp(old_gcv);
 
-% while true
+% TODO: when do we stop
+while true
     min_gcv = Inf;
     mars_terms = size(H,2);
     for k = 2:mars_terms
@@ -31,12 +29,16 @@ disp(gcv);
             min_ix = k;
         end
     end
-    disp('new min gcv');
-    disp(min_gcv);
+%     disp('new min gcv');
+%     disp(min_gcv);
+    if min_gcv >= old_gcv
+        break;
+    end
+    old_gcv = min_gcv;
     % remove hinge function which gives smallest gcv
     H = H(:,[1:min_ix-1,min_ix+1:end]);
     knots = knots([1:min_ix-1,min_ix+1:end],:);
     B = B([1:min_ix-1,min_ix+1:end],:);
-% end
+end
 
 end
