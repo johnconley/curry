@@ -1,4 +1,4 @@
-function [Xtrain, Ytrain, Xtest, Ytest] = gen_data()
+function [Xtrain, Ytrain, Xtest, Ytest] = gen_data(years)
 % stats = csvread('fixedstats.csv');
 stats = csvread('totals_stats_no1979_fixed.csv');
 % stats(stats == -1) = NaN;
@@ -9,7 +9,7 @@ p = size(players,1);
 Xtrain = [];
 Ytrain = [];
 % for i=1:p
-for i=1:100
+for i=1:1000
     rows = stats(:,1) == players(i);
     Xplayer = stats(rows,:);
 
@@ -33,9 +33,19 @@ for i=1:100
     end
     
     % column corresponds to which attribute we're predicting
-    % end is points scored
-    Yplayer = Xplayer(2:end,end);
+    % last column is points scored
+    n = size(Xplayer,2);
+    Yplayer = Xplayer(2:end,n);
     Xplayer = Xplayer(1:end-1,:);
+    if years == 2
+        if size(Xplayer,1) == 1
+            Xplayer = [zeros(1,n),Xplayer];
+        else
+            if size(Xplayer,1) > 0
+                Xplayer = [[zeros(1,n);Xplayer(1:end-1,:)],Xplayer];
+            end
+        end
+    end
 
     num_years = size(Xplayer,1);
     if num_years > 0
@@ -46,7 +56,7 @@ end
 
 m = size(Xtrain, 1);
 permutation = randperm(m);
-test_set = permutation(1:10);
+test_set = permutation(1:floor(m/10));
 train_set = setdiff(1:m,test_set);
 Xtest = Xtrain(test_set,:);
 Ytest = Ytrain(test_set);
