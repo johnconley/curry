@@ -1,4 +1,4 @@
-function [knots, B] = forward_pass(X, Y, max_terms)
+function [knots, B, H] = forward_pass(X, Y, max_terms, mode)
 % X: [m x n] matrix of training input data
 % Y: [m x 1] vector of training output data
 % max_terms: maximum numbers of terms in the model
@@ -13,7 +13,8 @@ for i=1:n
         xj(j,i) = u(j);
     end
 end
-knot_pool = knot_combo(xj);
+knot_pool = knot_combo(xj,mode);
+
 % knots(1,:) = [t,j,s], where t is the value of the knot, j is the feature,
 % and s in {1,-1}. one row generates max(s*(t-xj),0)
 knots = zeros(2*max_terms,5);
