@@ -1,5 +1,4 @@
-% function [mus, sigmas, priors, free_energy_m, likelihood_m] = ldm_maximization(X, prob_c)
-function [A, gamma, C, sigma] = ldm_maximization(X, mus, Vs, Js)
+function [mu0, V0, A, gamma, C, sigma] = ldm_maximization(X, mus, Vs, Js)
 % M-step for an LDM
 %
 % X: [n x num_years] matrix representing num_years of data for one player
@@ -15,6 +14,9 @@ function [A, gamma, C, sigma] = ldm_maximization(X, mus, Vs, Js)
 % sigma: [n x n] matrix
 
 [n, num_years] = size(X);
+
+mu0 = mus(:,1);
+V0 = Vs(:,:,1);
 
 A_sum1 = zeros(n);
 A_sum2 = zeros(n);
@@ -59,7 +61,7 @@ for k = 1:num_years
     sigma = sigma + x_k*x_k' - C'*mu_k*x_k'...
                   - x_k*mu_k'*C + C'*(V_k + mu_k*mu_k')*C;
 end
-sigma = sigma/num_years;
+sigma = sigma / num_years;
 
 % INPUT:
 %  X: [m x n] matrix, where each row is an n-dimensional input example
@@ -74,15 +76,6 @@ sigma = sigma/num_years;
 %  free_energy_m: [1 x 1] scalar value representing the free energy value
 %  likelihood_m: [1 x 1] scalar value representing the log-likelihood value
 
-% [m, n] = size(X);
-% K = size(prob_c,1);
-% prob_c_sums = sum(prob_c,2);
-% priors = prob_c_sums'/m;
-% 
-% mus = zeros(n,K);
-% sigmas = zeros(n,n,K);
-% free_energy_m = 0;
-% likelihood_m = 0;
 % for j = 1:K
 %     gamma_j = prob_c(j,:);
 %     mu = transpose(gamma_j*X / prob_c_sums(j));

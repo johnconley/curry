@@ -1,5 +1,4 @@
-% function [prob_c, free_energy_e, likelihood_e] = ldm_expectation(X, mus, sigmas, priors)
-function [mu_hats, V_hats, Js] = ldm_expectation(X, mu0, P0, A, gamma, C, sigma)
+function [mu_hats, V_hats, Js] = ldm_expectation(X, mu0, V0, A, gamma, C, sigma)
 % E-step for an LDM
 
 [n, num_years] = size(X);
@@ -8,25 +7,24 @@ mus = zeros(n, num_years);
 Ps = zeros(n,n,num_years);
 Vs = zeros(n,n,num_years);
 Ks = zeros(n,n,num_years);
+Js = zeros(n,n,num_years);
+mu_hats = zeros(n, num_years);
+V_hats = zeros(n,n,num_years);
 
-Ks(:,:,1) = P0*C' / (C*P0*C' + sigma); % K1 = P0*C'*(C*P0*C'+sigma)^(-1)
+Ks(:,:,1) = V0*C' / (C*V0*C' + sigma); % K1 = V0*C'*(C*V0*C'+sigma)^(-1)
 mus(:,1) = mu0 + Ks(:,:,1)*(X(:,1) - C*mu0);
-Vs(:,:,1) = (eye(n) - Ks(:,:,1)*C)*P0;
+Vs(:,:,1) = (eye(n) - Ks(:,:,1)*C)*V0;
+Ps(:,:,1) = A*Vs(:,:,1)*A' + gamma;
+Js(:,:,1) = Vs(:,:,1)*A' / Ps(:,:,1);
 for k = 2:num_years
-    Ps(:,:,k-1) = A*Vs(:,:,k-1)*A' + gamma;
+    Ps(:,:,k) = A*Vs(:,:,k)*A' + gamma;
     Ks(:,:,k) = Ps(:,:,k-1)*C' / (C*Ps(:,:,k-1)*C' + sigma);
     mus(:,k) = A*mus(:,k-1) + Ks(:,:,k)*(X(:,k) - C*A*mus(:,k-1));
     Vs(:,:,k) = (eye(n) - Ks(:,:,k)*C) * Ps(:,:,k-1);
-end
-
-Js = zeros(n,n,num_years);
-for k = 2:num_years
     Js(:,:,k) = Vs(:,:,k)*A' / Ps(:,:,k);
 end
 
-mu_hats = zeros(n, num_years);
 mu_hats(:,num_years) = mus(:,num_years);
-V_hats = zeros(n,n,num_years);
 V_hats(:,:,num_years) = Vs(:,:,num_years);
 for k = num_years-1:-1:1
     mu_hats(:,k) = mus(:,k) + Js(:,:,k)*(mu_hats(:,k+1) - A*mus(:,k));
