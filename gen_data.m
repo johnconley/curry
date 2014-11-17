@@ -45,6 +45,7 @@ for i=1:100
 end
 
 m = size(Xtrain, 1);
+disp(m);
 permutation = randperm(m);
 test_set = permutation(1:10);
 train_set = setdiff(1:m,test_set);
