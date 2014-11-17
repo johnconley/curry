@@ -37,7 +37,8 @@ while true
     old_gcv = min_gcv;
     % remove hinge function which gives smallest gcv
     H = H(:,[1:min_ix-1,min_ix+1:end]);
-    knots = knots([1:min_ix-1,min_ix+1:end],:);
+    knots_min_ix = min_ix - 1;
+    knots = knots([1:knots_min_ix-1,knots_min_ix+1:end],:);
     B = B([1:min_ix-1,min_ix+1:end],:);
 end
 

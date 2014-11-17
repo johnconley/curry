@@ -4,6 +4,6 @@ function [knots, B, H] = mars(X, Y, max_terms, mode)
 % max_terms: maximum numbers of terms in the model
 
 [knots, B, H] = forward_pass(X, Y, max_terms, mode);
-%[knots, B]  = backward_pass(X, Y, knots, B);
+[knots, B]  = backward_pass(X, Y, knots, B);
 
 end

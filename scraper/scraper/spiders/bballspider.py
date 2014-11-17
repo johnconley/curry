@@ -17,10 +17,10 @@ class CurrySpider(scrapy.Spider):
     # start_urls = start_urls[:10]
 
     def parse(self, response):
-        filename = "stats"
+        filename = "stats_totals"
         player_id = response.url.split("/")[-1].split(".")[0]
         name = response.xpath('//div[@id="info_box"]//h1/text()').extract()[0]
-        table = '//table[@id="per_minute"]/tbody'
+        table = '//table[@id="totals"]/tbody'
         rows = response.xpath(table).css('tr')
         fields = ['id',
                   'name',
