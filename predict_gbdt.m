@@ -13,7 +13,8 @@ for i = 1:m
     for j = 2:M
         b = bs(j);
         h = hs{j};
-        y = y + b*h.predict(x);
+%         y = y + b*h.predict(x);
+        y = y + b*predict_tree(x, h);
     end
     Y(i) = y;
 end

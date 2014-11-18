@@ -1,6 +1,7 @@
-function [Xtrain, Ytrain, Xtest, Ytest] = gen_data()
+function [Xtrain, Ytrain, Xtest, Ytest] = gen_data(years, data_type, filename, data_size)
 % stats = csvread('fixedstats.csv');
-stats = csvread('totals_stats_no1979_fixed.csv');
+
+stats = csvread(filename);
 % stats(stats == -1) = NaN;
 stats(stats == -1) = 0;
 players = unique(stats(:,1));
@@ -9,7 +10,12 @@ p = size(players,1);
 Xtrain = [];
 Ytrain = [];
 % for i=1:p
-for i=1:100
+if data_size == 100
+    AA = 100;
+else
+    AA = p;
+end
+for i=1:AA
     rows = stats(:,1) == players(i);
     Xplayer = stats(rows,:);
 
@@ -23,19 +29,35 @@ for i=1:100
     % combine two teams in same year to one line
     j=2;
     while (j<size(Xplayer,1))
-        if Xplayer(j,1) == Xplayer(j-1,1)
-            % for totals
-            Xplayer(j-1,2:end) = Xplayer(j-1,2:end) + Xplayer(j,2:end);
+        count = 1;
+  
+        while ((Xplayer(j,1) == Xplayer(j-1,1))&&(j<size(Xplayer,1)))
+            count = count + 1;
+            Xplayer(j-1,2:end) = (Xplayer(j-1,2:end) + Xplayer(j,2:end));            
             Xplayer = Xplayer([1:j-1,j+1:end],:);
-        else
-            j = j+1;
         end
+        
+        if count > 1 && ~strcmp(data_type, 'totals')
+            Xplayer(j-1,2:end) = (Xplayer(j-1,2:end)) / count;
+        end
+        
+        j = j+1;
     end
     
     % column corresponds to which attribute we're predicting
-    % end is points scored
-    Yplayer = Xplayer(2:end,end);
+    % last column is points scored
+    n = size(Xplayer,2);
+    Yplayer = Xplayer(2:end,n);
     Xplayer = Xplayer(1:end-1,:);
+    if years == 2
+        if size(Xplayer,1) == 1
+            Xplayer = [zeros(1,n),Xplayer];
+        else
+            if size(Xplayer,1) > 0
+                Xplayer = [[zeros(1,n);Xplayer(1:end-1,:)],Xplayer];
+            end
+        end
+    end
 
     num_years = size(Xplayer,1);
     if num_years > 0
@@ -45,9 +67,8 @@ for i=1:100
 end
 
 m = size(Xtrain, 1);
-disp(m);
 permutation = randperm(m);
-test_set = permutation(1:10);
+test_set = permutation(1:floor(m/10));
 train_set = setdiff(1:m,test_set);
 Xtest = Xtrain(test_set,:);
 Ytest = Ytrain(test_set);

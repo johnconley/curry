@@ -1,8 +1,10 @@
 function f = gbdt(X, Y)
 
-M = 10;
+M = 20;
 delta = 1;
+max_decisions = 10;
 min_leaf = 5;
+tol = 0.5;
 avg_Y = mean(Y);
 
 % initialize model with a constant value
@@ -12,13 +14,15 @@ hs{1} = 1;
 bs(1) = avg_Y;
 
 for i = 2:M
+    disp(i);
     % compute pseudo-residuals
     predictions = predict_gbdt(X, bs, hs, i-1);
     residuals = Y - predictions;
     
     % train a decision tree on pseudo-residuals
     % replace with our own decision tree calculator
-    h = fitrtree(X, residuals, 'MinLeaf', min_leaf);
+%     h = fitrtree(X, residuals, 'MinLeaf', min_leaf);
+    h = decision_tree(X, residuals, max_decisions, min_leaf, tol);
     hs{i} = h;
     
     % find arg min_b huber_loss(Y,pred_Y)
