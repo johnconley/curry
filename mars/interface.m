@@ -1,4 +1,5 @@
 function interface()
+% interactive entry point to MARS model
 
 true = 1;
 count = 1;

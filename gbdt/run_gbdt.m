@@ -1,3 +1,5 @@
+% script to run the GBDT algorithm on per-possession two-point percentage
+% data and output the error rate
 
 filename='per_poss.csv';
 data_type = 'per_poss';

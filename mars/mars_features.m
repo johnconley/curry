@@ -1,5 +1,13 @@
 function H = mars_features(X, knots)
+% Input
+% -----
 % X: [m x n] matrix
+% knots: [K x 5] matrix of knots
+%
+% Output
+% ------
+% H: [m x K+1] matrix of MARS features
+
 m = size(X,1);
 num_hinges = size(knots,1);
 H = zeros(m,num_hinges);

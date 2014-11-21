@@ -1,7 +1,16 @@
 function [knots, B, H] = forward_pass(X, Y, max_terms, mode)
+% Input
+% -----
 % X: [m x n] matrix of training input data
 % Y: [m x 1] vector of training output data
 % max_terms: maximum numbers of terms in the model
+% mode: 'quadratic' or 'linear'
+%
+% Output
+% ------
+% knots: [K x 5] matrix of knots
+% B: [K+1 x 1] vector of MARS coefficients
+% H: [m x K+1] matrix of MARS features
 
 m = size(X,1);
 n = size(X,2);

@@ -12,17 +12,7 @@ function marsplot(data_type, stat_type, filename, max_value, position, data_size
 
 [Xtrain, Ytrain, Xtest, Ytest] = gen_data(data_type, stat_type, filename, data_size);
 
- %{
-B = q5_features(Xtrain, 'linear');
-theta = (B' * B) \ B' * Ytrain;
-pred_Y = q5_features(Xtest,'linear') * theta;
-pe_l = mean(abs(100*(Ytest - pred_Y)./Ytest));
-B = q5_features(Xtrain, 'quadratic');
-theta = (B' * B) \ B' * Ytrain;
-pred_Y = q5_features(Xtest,'quadratic') * theta;
-pe_q = mean(abs(100*(Ytest - pred_Y)./Ytest));
-%}
-max_terms = [1:max_value];
+max_terms = 1:max_value;
 
 errorl = zeros(size(max_terms));
 errorq = zeros(size(max_terms));
@@ -68,13 +58,6 @@ title(plot_name, 'fontsize', 14);
 xlabel('Max Number of Knots', 'fontsize', 12);
 ylabel('Percent Error', 'fontsize', 12);
 legend('MARS-Linear','MARS-Quadratic');
-%{
-data(1) = 1;
-data(2) = max_value;
-pe_l = pe_l * [1 ,1];
-pe_q = pe_q * [1,1];
-plot(max_terms, errorl, 'r-o', max_terms, errorq, 'b-x', data, pe_l, 'g-*', data, pe_q, 'k-+', 'LineWidth',2);
-%}
 
 subplot(1,2,2)
 plot(max_terms, error_mse_l, 'r-o', max_terms, error_mse_q, 'LineWidth',2);

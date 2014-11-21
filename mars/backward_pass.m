@@ -1,8 +1,15 @@
 function [knots, B] = backward_pass(X, Y, overfit_knots, overfit_B)
+% Input
+% -----
 % X: [m x n] matrix of training input data
 % Y: [m x 1] vector of training output data
-% knots: 
-% B: 
+% overfit_knots: [K x 5] matrix of knots from forward pass
+% overfit_B: [1+K x 1] vector of MARS coefficients from forward pass
+%
+% Output
+% ------
+% knots: [K' x 5] matrix of final knots
+% B: [K'+1 x 1] vector of final MARS coefficients
 
 penalty = 2;
 m = size(X,1);
@@ -14,7 +21,6 @@ pred_Y = H*B;
 rss = sum((Y - pred_Y).^2);
 old_gcv = calc_gcv(m, size(H,2), penalty, rss);
 
-% TODO: when do we stop
 while true
     min_gcv = Inf;
     mars_terms = size(H,2);

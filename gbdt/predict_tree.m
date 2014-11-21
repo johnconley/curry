@@ -1,6 +1,10 @@
 function Y = predict_tree(X, tree)
 % X: [m x n] matrix of input vectors
-% tree: [d x 5] decision tree
+% tree: [d x 5] matrix representing a decision tree
+%
+% Output
+% ------
+% Y: [m x 1] vector of predicted output
 
 m = size(X,1);
 Y = zeros(m,1);
