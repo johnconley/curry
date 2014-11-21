@@ -1,4 +1,4 @@
-function marsplot(years, data_type, stat_type, filename, max_value, position, data_size)
+function marsplot(data_type, stat_type, filename, max_value, position, data_size)
 %{ 
     Input
         Years: 1 or 2 (2 found to reduce data accuracy)
@@ -11,7 +11,8 @@ function marsplot(years, data_type, stat_type, filename, max_value, position, da
         
 %}
 
- [Xtrain, Ytrain, Xtest, Ytest] = gen_data(years, data_type, stat_type, filename, data_size);
+[Xtrain, Ytrain, Xtest, Ytest] = gen_data(data_type, stat_type, filename, data_size);
+
  %{
 B = q5_features(Xtrain, 'linear');
 theta = (B' * B) \ B' * Ytrain;
@@ -60,10 +61,11 @@ subplot(1,2,1)
 plot(max_terms, errorl, 'r-o', max_terms, errorq, 'b-x', 'LineWidth',2);
 
 if strcmp(data_type,'totals') == 1
-    title(strcat(stat_type,' Totals(',position,')'), 'fontsize', 14);
+    plot_name = strcat(stat_type,' Totals (',position,')');
 else
-    title(strcat(stat_type, ' Per 100 Possession(',position,')'), 'fontsize', 14);
+    plot_name = strcat(stat_type,' Per 100 Possessions (',position,')');
 end
+title(plot_name, 'fontsize', 14);
 xlabel('Max Number of Knots', 'fontsize', 12);
 ylabel('Percent Error', 'fontsize', 12);
 legend('MARS-Linear','MARS-Quadratic');
@@ -78,10 +80,11 @@ plot(max_terms, errorl, 'r-o', max_terms, errorq, 'b-x', data, pe_l, 'g-*', data
 subplot(1,2,2)
 plot(max_terms, error_mse_l, 'r-o', max_terms, error_mse_q, 'LineWidth',2);
 if strcmp(data_type,'totals') == 1
-    title(strcat(stat_type, ' Totals(',position,')'), 'fontsize', 14);
+    plot_name = strcat(stat_type,' Totals (',position,')');
 else
-    title(strcat(stat_type, ' Per 100 Possession(',position,')'), 'fontsize', 14);
+    plot_name = strcat(stat_type,' Per 100 Possessions (',position,')');
 end
+title(plot_name, 'fontsize', 14);
 xlabel('Max Number of Knots', 'fontsize', 12);
 ylabel('Mean Squared Error', 'fontsize', 12);
 legend('MARS-Linear','MARS-Quadratic');
