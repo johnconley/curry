@@ -1,29 +1,22 @@
-function [Xtrain, Ytrain, Xtest, Ytest] = gen_data(years, data_type, filename, data_size)
-% stats = csvread('fixedstats.csv');
+function [Xtrain, Ytrain, Xtest, Ytest] = gen_data(data_type, filename, p)
 
 stats = csvread(filename);
-% stats(stats == -1) = NaN;
 stats(stats == -1) = 0;
 players = unique(stats(:,1));
-p = size(players,1);
+
+switch nargin
+    case 2
+        p = size(players,1);
+end
 
 Xtrain = [];
 Ytrain = [];
-% for i=1:p
-if data_size == 100
-    AA = 100;
-else
-    AA = p;
-end
-for i=1:AA
+for i = 1:p
+    % select one player
     rows = stats(:,1) == players(i);
     Xplayer = stats(rows,:);
 
     % get rid of unnecessary features
-%     Xplayer = Xplayer(:, [2,10:end]);
-%     n = size(Xplayer,2);
-%     pctgs = n - [18,15,12,9];
-%     Xplayer = Xplayer(:,setdiff(1:n,pctgs));
     Xplayer = Xplayer(:,[2,13,14,16,17,19,20,22,23,25,26:end]);
     
     % combine two teams in same year to one line
@@ -44,20 +37,10 @@ for i=1:AA
         j = j+1;
     end
     
-    % column corresponds to which attribute we're predicting
-    % last column is points scored
+    % select attribute by column
     n = size(Xplayer,2);
-    Yplayer = Xplayer(2:end,n);
+    Yplayer = Xplayer(2:end,n); % total points
     Xplayer = Xplayer(1:end-1,:);
-    if years == 2
-        if size(Xplayer,1) == 1
-            Xplayer = [zeros(1,n),Xplayer];
-        else
-            if size(Xplayer,1) > 0
-                Xplayer = [[zeros(1,n);Xplayer(1:end-1,:)],Xplayer];
-            end
-        end
-    end
 
     num_years = size(Xplayer,1);
     if num_years > 0
@@ -66,6 +49,7 @@ for i=1:AA
     end
 end
 
+% split into test set and training set
 m = size(Xtrain, 1);
 permutation = randperm(m);
 test_set = permutation(1:floor(m/10));
