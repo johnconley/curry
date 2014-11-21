@@ -14,6 +14,8 @@ Data
 
 MARS
 ----
+- To run pre-selected MARS regressions, call `run_mars` from the `mars` directory.  This script tests the MARS algorithm on per-possession data to predict two-point percentage, assists, total rebounds, and points for various positions
+- Call `interface` in the `mars` directory and follow the given directions to test MARS on the parameters that you choose
 
 GBDT
 ----
