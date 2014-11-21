@@ -13,10 +13,10 @@ min_leaf = 100;
 error_tol = 10^(-6);
 
 error = zeros(size(num_trees_list));
+f = gbdt(Xtrain, Ytrain, max(num_trees_list), tree_builder, max_decisions, min_leaf, error_tol);
 for i = 1:size(num_trees_list,2)
     num_trees = num_trees_list(i);
-    f = gbdt(Xtrain, Ytrain, num_trees, tree_builder, max_decisions, min_leaf, error_tol);
-    pred_Y = f(Xtest);
-    error(i) = 100 * abs(pred_Y - Ytest)./Ytest;
+    pred_Y = f(Xtest, num_trees+1);
+    error(i) = mean(100 * abs(pred_Y - Ytest) ./ Ytest);
 end
 plot(error);

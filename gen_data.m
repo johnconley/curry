@@ -1,4 +1,16 @@
 function [Xtrain, Ytrain, Xtest, Ytest] = gen_data(data_type, filename, p)
+% Input
+% -----
+% data_type: 'totals' or 'per_poss'
+% file_name: name of the data file
+% p: if specified, p is the number of players to generate data from
+%
+% Output
+% ------
+% Xtrain: [m_train x n] matrix of training input data
+% Ytrain: [m_train x 1] vector of training output data
+% Xtest: [m_test x n] matrix of training input data
+% Ytest: [m_test x 1] vector of training output data
 
 stats = csvread(filename);
 stats(stats == -1) = 0;
