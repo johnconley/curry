@@ -17,10 +17,14 @@ filename = strcat('../data/', filename);
 stats = csvread(filename);
 stats(stats == -1) = 0;
 players = unique(stats(:,1));
+total_players = size(players,1);
 
+% if p > total_players, p < 1, or p is unspecified, set p to the total
+% number of players
+if p > total_players || p < 1, p = total_players; end
 switch nargin
     case 3
-        p = size(players,1);
+        p = total_players;
 end
 
 Xtrain = [];
