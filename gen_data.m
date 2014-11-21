@@ -12,7 +12,7 @@ function [Xtrain, Ytrain, Xtest, Ytest] = gen_data(data_type, filename, p)
 % Xtest: [m_test x n] matrix of training input data
 % Ytest: [m_test x 1] vector of training output data
 
-filename = strcat('../data/', filename);
+filename = strcat('data/', filename);
 stats = csvread(filename);
 stats(stats == -1) = 0;
 players = unique(stats(:,1));
