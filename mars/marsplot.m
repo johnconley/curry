@@ -1,13 +1,12 @@
 function marsplot(data_type, stat_type, filename, max_value, position, data_size)
 %{ 
     Input
-        Years: 1 or 2 (2 found to reduce data accuracy)
         data_type: 'totals' or 'pos' (totals has high error rate)
         stat_type{2P%,TRB,AST, PTS}
         filename: Input file name
         max_value: max number of knots
         position: position of players
-        data_size: 'full' or 'partial'(100 players)
+        data_size: number of players to train/test on; 0 for all players
         
 %}
 
