@@ -80,7 +80,7 @@ if(exit~= 1)
         end
         max_value = result4(i);
         data_size = result5(i);
-        marsplot(1, data_type, stat_type, filename, max_value, position, data_size, 11);
+        marsplot(1, data_type, stat_type, filename, max_value, position, data_size);
     end
 end
 end

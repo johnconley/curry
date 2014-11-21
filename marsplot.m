@@ -1,4 +1,4 @@
-function marsplot(years, data_type, stat_type, filename, max_value, position, data_size, num)
+function marsplot(years, data_type, stat_type, filename, max_value, position, data_size)
 %{ 
     Input
         Years: 1 or 2 (2 found to reduce data accuracy)
@@ -86,10 +86,17 @@ xlabel('Max Number of Knots', 'fontsize', 12);
 ylabel('Mean Squared Error', 'fontsize', 12);
 legend('MARS-Linear','MARS-Quadratic');
 
-if strcmp(data_size, 'partial') == 1
-    savefig(strcat(position, '_', data_type, '_', num2str(max_value), '_partial_', num2str(num), '.fig'));
-else
-    savefig(strcat(position, '_', data_type, '_', num2str(max_value), '_full_', num2str(num), '.fig'));
+i = 1;
+true = 1;
+while(true == 1)
+    savename = strcat(position, '_', data_type, '_', stat_type, '_', num2str(max_value), '_size(', num2str(data_size), ')_', num2str(i), '.fig');
+    if(exist(savename, 'file')  == 0)
+        true = 0;
+    else
+        i = i+1;
+    end
 end
+savefig(savename);
+
 
 end

@@ -7,23 +7,25 @@ m = size(X,1);
 n = size(X,2);
 
 xj = zeros(m,n);
+%Only unique knots in each column need to be considered
 for i=1:n
     u = unique(X(:,i));
     for j=1:size(u)
         xj(j,i) = u(j);
     end
 end
+%create a set of possible candidate functions
 knot_pool = knot_combo(xj,mode);
 
-% knots(1,:) = [t,j,s], where t is the value of the knot, j is the feature,
-% and s in {1,-1}. one row generates max(s*(t-xj),0)
+% knots(1,:) = [t1,j1, t2, j2, s], where t is the value of the knot, j is the feature,
+% and s in {1,-1}. one row generates max(s*(t1-xj),0) if t2 = 0
+% otherwise it is quadratic of the form: max(s*(t1-xj1)(t2-xj2),0)
 knots = zeros(2*max_terms,5);
 H = zeros(m, (max_terms * 2) + 1);
 H(:,1) = 1;
 term_ix = 1;
 
-% TODO: generate max_terms terms, not 2*max_terms
-for knotNum = 1:max_terms
+for knotNum = 1:max_terms 
     min_err = Inf;
     for i=1:size(knot_pool,2)       
         temp_H = H;
