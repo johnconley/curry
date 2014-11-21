@@ -1,9 +1,6 @@
-wd = cd;
-cd ..;
-filename='per_poss.csv';
-data_type = 'per_poss';
-[Xtrain, Ytrain, Xtest, Ytest] = gen_data(data_type, filename);
-cd wd;
+% filename='per_poss.csv';
+% data_type = 'per_poss';
+% [Xtrain, Ytrain, Xtest, Ytest] = gen_data(data_type, filename);
 
 % on per possession data, all players, 10 trees, 15 decisions,
 % min_leaf = 30, and tree_builder = 'all', our decision tree achieved 9.18%
