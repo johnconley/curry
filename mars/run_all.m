@@ -1,4 +1,4 @@
-function runAll()
+function run_all()
 
 FF = 0
 
