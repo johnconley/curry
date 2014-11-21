@@ -2,7 +2,8 @@ function [Xtrain, Ytrain, Xtest, Ytest] = gen_data(data_type, stat_type, filenam
 % Input
 % -----
 % data_type: 'totals' or 'per_poss'
-% file_name: name of the data file
+% stat_type: 'TRB', 'AST', 'PTS', or '2P%'
+% file_name: name of the data file (see data directory)
 % p: if specified, p is the number of players to generate data from
 %
 % Output
@@ -51,7 +52,6 @@ for i = 1:p
     end
     
     % select attribute by column
-    n = size(Xplayer,2);
     if strcmp(stat_type, 'TRB') == 1
         Yplayer = Xplayer(2:end,8) + Xplayer(2:end,9);
     elseif strcmp(stat_type, 'AST') == 1

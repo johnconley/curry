@@ -11,14 +11,13 @@ function f = gbdt(X, Y, num_trees, tree_builder, max_decisions, min_leaf, error_
 %
 % Output
 % ------
-% f(x, M): linear combination of decision trees
+% f(x): linear combination of decision trees
 
 % initialize model with a constant value
 hs = cell(num_trees,1);
 hs{1} = mean(Y);
 
 for i = 2:num_trees+1
-    disp(i);
     % compute residuals
     predictions = predict_gbdt(X, hs, i-1);
     residuals = Y - predictions;
@@ -28,6 +27,6 @@ for i = 2:num_trees+1
                       min_leaf, error_tol);
 end
 
-f = @(x, M) predict_gbdt(x, hs, M);
+f = @(x) predict_gbdt(x, hs);
 
 end

@@ -1,24 +1,20 @@
 
 filename='per_poss.csv';
 data_type = 'per_poss';
-stat_type = '2p%';
+stat_type = '2P%';
 [Xtrain, Ytrain, Xtest, Ytest] = gen_data(data_type, stat_type, filename);
 
-% on per possession data, all players, 10 trees, 15 decisions,
-% min_leaf = 30, and tree_builder = 'all', our decision tree achieved 9.18%
-% error when predicting 2 point percentage (ARESlab 7.61, linear r. 7.65)
-num_trees_list = [4,8,12];%,16,20];
-tree_builder = 'all';
+num_trees = 10;
+tree_builder = 'random';
 max_decisions = 15;
-% min_leaf = 30;
-min_leaf = 100;
+min_leaf = 30;
 error_tol = 10^(-6);
 
-error = zeros(size(num_trees_list));
-f = gbdt(Xtrain, Ytrain, max(num_trees_list), tree_builder, max_decisions, min_leaf, error_tol);
-for i = 1:size(num_trees_list,2)
-    num_trees = num_trees_list(i);
-    pred_Y = f(Xtest, num_trees+1);
-    error(i) = mean(100 * abs(pred_Y - Ytest) ./ Ytest);
-end
-plot(num_trees_list,error);
+fprintf('Running GBDT with %d trees, %d max decisions, and %d min examples per leaf\n',...
+        num_trees, max_decisions, min_leaf);
+f = gbdt(Xtrain, Ytrain, num_trees, tree_builder, max_decisions, min_leaf, error_tol);
+pred_Y = f(Xtest);
+percent_error = mean(100 * abs(pred_Y - Ytest) ./ Ytest);
+mse = mean((pred_Y - Ytest).^2);
+
+fprintf('Percent error: %.3f\nMean squared error: %.4f\n', percent_error, mse);
