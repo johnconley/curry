@@ -1,10 +1,28 @@
 function runAll()
 
+FF = 0
 
 
 FF = 1
+for i=1:1
+    marsplot(1, 'totals', '2P%', 'stats_totals_no1979_fixed_pos_4.csv', 20, 'Power Forward', 'full', i);
+    marsplot(1, 'totals', '2P%', 'stats_totals_no1979_fixed_pos_1.csv', 20, 'Point Guard', 'full', i);
+    marsplot(1, 'totals', '2P%', 'stats_totals_no1979_fixed_pos_3.csv', 20, 'Small Forward', 'full', i);
+    marsplot(1, 'totals', '2P%', 'stats_totals_no1979_fixed_pos_2.csv', 20, 'Shooting Guard', 'full', i);
+    marsplot(1, 'totals', '2P%', 'stats_totals_no1979_fixed_pos_5.csv', 20, 'Center', 'full', i);
+    marsplot(1, 'totals', '2P%', 'stats_totals_no1979_fixed.csv', 20, 'All Positions', 'full', i);
+end
 
 
+for i=2:2
+    marsplot(1, 'pos', 'stats_per_poss_no1979_fixed_pos_5.csv', 20, 'Center(2P%)', 10, i);
+end
+
+F = 2;
+
+for i=2:2
+    marsplot(1, 'pos', 'stats_per_poss_no1979_fixed.csv', 20, 'All Positions(2P%)', 101, i);
+end
 
 for i=1:2
     marsplot(1, 'pos', 'stats_per_poss_no1979_fixed_pos_4.csv', 20, 'Power Forward', 100, i);

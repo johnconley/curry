@@ -1,18 +1,27 @@
-function marsplot(years, data_type, filename, max_value, position, data_size, num)
+function marsplot(years, data_type, stat_type, filename, max_value, position, data_size, num)
 %{ 
     Input
         Years: 1 or 2 (2 found to reduce data accuracy)
-        Data_Type: 'totals' or 'pos' (totals has high error rate)
+        data_type: 'totals' or 'pos' (totals has high error rate)
+        stat_type{2P%,TRB,AST, PTS}
         filename: Input file name
         max_value: max number of knots
         position: position of players
-        data_size: 100 or anything else=all
+        data_size: 'full' or 'partial'(100 players)
         
 %}
 
- [Xtrain, Ytrain, Xtest, Ytest] = gen_data(years, data_type, filename, data_size);
-
-
+ [Xtrain, Ytrain, Xtest, Ytest] = gen_data(years, data_type, stat_type, filename, data_size);
+ %{
+B = q5_features(Xtrain, 'linear');
+theta = (B' * B) \ B' * Ytrain;
+pred_Y = q5_features(Xtest,'linear') * theta;
+pe_l = mean(abs(100*(Ytest - pred_Y)./Ytest));
+B = q5_features(Xtrain, 'quadratic');
+theta = (B' * B) \ B' * Ytrain;
+pred_Y = q5_features(Xtest,'quadratic') * theta;
+pe_q = mean(abs(100*(Ytest - pred_Y)./Ytest));
+%}
 max_terms = [1:max_value];
 
 errorl = zeros(size(max_terms));
@@ -35,14 +44,6 @@ for i=1:max(max_terms)
     errorq(max(max_terms) + 1 - i) = mean(abs(100*(Ytest - pred_Y_q)./Ytest));
     error_mse_l(max(max_terms) + 1 - i) = mean((Ytest - pred_Y_l).^2);
     error_mse_q(max(max_terms) + 1 - i) = mean((Ytest - pred_Y_q).^2);
-    %{
-    H_fl = mars_features(Xtrain, knots_back_l);
-    H_fq = mars_features(Xtrain, knots_back_q);
-    pred_Y_l = H_fl * B_back_l;
-    pred_Y_q = H_fq * B_back_q;
-    error(max(max_terms) + 1 - i) = mean((Ytrain - pred_Y_l).^2);
-    error3(max(max_terms) + 1 - i) = mean((Ytrain - pred_Y_q).^2);
-    %}
     knots_l(size(knots_l,1),:) = [];
     knots_l(size(knots_l,1),:) = [];
     knots_q(size(knots_q,1),:) = [];
@@ -57,53 +58,38 @@ figure;
 set(gcf,'color','white')
 subplot(1,2,1)
 plot(max_terms, errorl, 'r-o', max_terms, errorq, 'b-x', 'LineWidth',2);
+
 if strcmp(data_type,'totals') == 1
-    title(strcat('M.A.R.S. Totals(',position,')'), 'fontsize', 14);
+    title(strcat(stat_type,' Totals(',position,')'), 'fontsize', 14);
 else
-    title(strcat('M.A.R.S. Per 100 Possession(',position,')'), 'fontsize', 14);
+    title(strcat(stat_type, ' Per 100 Possession(',position,')'), 'fontsize', 14);
 end
 xlabel('Max Number of Knots', 'fontsize', 12);
 ylabel('Percent Error', 'fontsize', 12);
-legend('Linear','Quadratic');
+legend('MARS-Linear','MARS-Quadratic');
+%{
+data(1) = 1;
+data(2) = max_value;
+pe_l = pe_l * [1 ,1];
+pe_q = pe_q * [1,1];
+plot(max_terms, errorl, 'r-o', max_terms, errorq, 'b-x', data, pe_l, 'g-*', data, pe_q, 'k-+', 'LineWidth',2);
+%}
 
 subplot(1,2,2)
-plot(max_terms, error_mse_l, 'r-o', max_terms, error_mse_q, 'b-x', 'LineWidth',2);
+plot(max_terms, error_mse_l, 'r-o', max_terms, error_mse_q, 'LineWidth',2);
 if strcmp(data_type,'totals') == 1
-    title(strcat('M.A.R.S. Totals(',position,')'), 'fontsize', 14);
+    title(strcat(stat_type, ' Totals(',position,')'), 'fontsize', 14);
 else
-    title(strcat('M.A.R.S. Per 100 Possession(',position,')'), 'fontsize', 14);
+    title(strcat(stat_type, ' Per 100 Possession(',position,')'), 'fontsize', 14);
 end
 xlabel('Max Number of Knots', 'fontsize', 12);
 ylabel('Mean Squared Error', 'fontsize', 12);
-legend('Linear','Quadratic');
+legend('MARS-Linear','MARS-Quadratic');
 
-if data_size == 100
-    savefig(strcat(position, '_', num2str(max_value), '_partial_', num2str(num), '.fig'));
+if strcmp(data_size, 'partial') == 1
+    savefig(strcat(position, '_', data_type, '_', num2str(max_value), '_partial_', num2str(num), '.fig'));
 else
-    savefig(strcat(position, '_', num2str(max_value), '_full_', num2str(num), '.fig'));
+    savefig(strcat(position, '_', data_type, '_', num2str(max_value), '_full_', num2str(num), '.fig'));
 end
-
-
-
-
-%{
-for i=1:size(max_terms,2)
-    disp(max_terms(i))
-    error(i) = mars_test(Xtrain, Ytrain, Xtrain, Ytrain, max_terms(i),'linear')
-    error2(i) = mars_test(Xtrain, Ytrain, Xtest, Ytest, max_terms(i),'linear')
-    error3(i) = mars_test(Xtrain, Ytrain, Xtrain, Ytrain, max_terms(i),'quadratic')
-    error4(i) = mars_test(Xtrain, Ytrain, Xtest, Ytest, max_terms(i),'quadratic')
-end
-%}
-
-
-%{
-Old plotting
-plot(max_terms, error, 'r-o', max_terms, error2, 'b-x', max_terms, error3, 'g-+', max_terms, error4, 'k-d','LineWidth',2);
-title('M.A.R.S. Test on Season Totals(One Year)', 'fontsize', 14);
-xlabel('Max number of knots', 'fontsize', 12);
-ylabel('Mean Squared Error', 'fontsize', 12);
-legend('Linear-Train','Linear-Test','Quadratic-Train','Quadratic-Test');
-%}
 
 end

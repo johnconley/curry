@@ -16,10 +16,11 @@ for j=1:n
 end
 
 knot_pool = temp;
+
 if (strcmp(mode,'quadratic') == 1)
     for a=1:size(temp,2)
         for b=a:size(temp,2)
-            if(rand() <.01)
+            if(rand() < .01)
                 knot_pool(1,count) = temp(1,a);
                 knot_pool(2,count) = temp(2,a);
                 knot_pool(3,count) = temp(1,b);
@@ -29,5 +30,6 @@ if (strcmp(mode,'quadratic') == 1)
         end
     end
 end
+
 end
 

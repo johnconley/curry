@@ -1,4 +1,4 @@
-function [Xtrain, Ytrain, Xtest, Ytest] = gen_data(years, data_type, filename, data_size)
+function [Xtrain, Ytrain, Xtest, Ytest] = gen_data(years, data_type, stat_type, filename, data_size)
 % stats = csvread('fixedstats.csv');
 
 stats = csvread(filename);
@@ -10,12 +10,10 @@ p = size(players,1);
 Xtrain = [];
 Ytrain = [];
 % for i=1:p
-if data_size == 100
-    AA = 100;
-else
-    AA = p;
+if(data_size == 0)
+    data_size = p;
 end
-for i=1:AA
+for i=1:min(p,data_size)
     rows = stats(:,1) == players(i);
     Xplayer = stats(rows,:);
 
@@ -47,7 +45,15 @@ for i=1:AA
     % column corresponds to which attribute we're predicting
     % last column is points scored
     n = size(Xplayer,2);
-    Yplayer = Xplayer(2:end,n);
+    if(strcmp(stat_type, 'TRB') == 1)
+        Yplayer = Xplayer(2:end,8) + Xplayer(2:end,9);
+    elseif (strcmp(stat_type, 'AST') == 1)
+        Yplayer = Xplayer(2:end,10);
+    elseif (strcmp(stat_type, 'PTS') == 1)
+        Yplayer = Xplayer(2:end,end);
+    else
+        Yplayer = Xplayer(2:end,4) ./ Xplayer(2:end,5);
+    end
     Xplayer = Xplayer(1:end-1,:);
     if years == 2
         if size(Xplayer,1) == 1
