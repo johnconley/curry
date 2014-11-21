@@ -1,4 +1,4 @@
-% filename='data/stats_per_poss_no1979_fixed.csv';
+% filename='data/per_poss.csv';
 % data_type = 'per_poss';
 % [Xtrain, Ytrain, Xtest, Ytest] = gen_data(data_type, filename);
 
