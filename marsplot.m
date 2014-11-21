@@ -11,7 +11,7 @@ function marsplot(years, data_type, stat_type, filename, max_value, position, da
         
 %}
 
- [Xtrain, Ytrain, Xtest, Ytest] = gen_data(years, data_type, stat_type, filename, data_size);
+ [Xtrain, Ytrain, Xtest, Ytest] = gen_data(data_type, stat_type, filename, data_size);
  %{
 B = q5_features(Xtrain, 'linear');
 theta = (B' * B) \ B' * Ytrain;
